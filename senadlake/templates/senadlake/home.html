@@ -6,10 +6,91 @@
 {% block content %}
 {% include 'senadlake/partials/banner.html' %}
 
-<div class="col-md-12 mx-auto pt-2 pb-5 ">
+<div class="col-md-12 mx-auto pt-2 pb-5">
+
+    <div class="col-10 mx-auto mb-5 ">
+        <div class="col-7 mx-auto mb-4 c atxt1">
+            <h2>Mapa del Lugar</h2>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card border-primary h-100">
+                    <div class="card-body backg">
+                        <h1 class="atxt5 c">1500</h1>
+                        <h4 class="atxt0a c">Datalake</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Datalake</h5>
+                        <p class="card-text atxt0a">Espacio para contener datos en forma de archivos en formatos .xlsx, ods, .doc, .odt, .csv y .json</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-primary">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-outline-secondary" href="{% url 'allFiles' %}">Datalake</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-primary h-100">
+                    <div class="card-body backg">
+                        <h1 class="atxt5 c">170</h1>
+                        <h4 class="atxt0a c">Proyectos</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Documentación</h5>
+                        <p class="card-text atxt0a">Espacio para almacenar conjuntos de documentacion de aplicaciones, cursos y manuales.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-primary">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-outline-secondary" href="{% url 'allFiles' %}">Documentación</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-primary h-100">
+                    <div class="card-body backg">
+                        <h1 class="atxt5 c">12</h1>
+                        <h4 class="atxt0a c">Aplicaciones</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Repositorio</h5>
+                        <p class="card-text atxt0a">Espacio para guardar el codigo fuente de aplicativos creados por aprendices del SENA.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-primary">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-outline-secondary" href="{% url 'allFiles' %}">Repositorio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-primary h-100">
+                    <div class="card-body backg">
+                        <h1 class="atxt5 c">900</h1>
+                        <h4 class="atxt0a c">Documentos</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Data Warehouse</h5>
+                        <p class="card-text atxt0a">Espacio para almacenamiento de datos limpios y procesados ideales para su estudio y analisis.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-primary">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-outline-secondary" href="{% url 'allFiles' %}">Data Warehouse</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
     <div class="col-10 mx-auto mt-3">
-        <div class="col-5 mx-auto mb-4 c atxt1">
-            <h2>What Others Think Of Us</h2>
+        <div class="col-7 mx-auto mb-4 c atxt1">
+            <h2>Dinos Que Piensas Para Mejorar</h2>
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for rating in ratings %}

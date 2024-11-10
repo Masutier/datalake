@@ -1,6 +1,9 @@
 import os
 import json
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def localSett():
     ALLOWED_HOSTS = ['localhost']
 
@@ -43,7 +46,7 @@ def prodSett():
     return ALLOWED_HOSTS, RECAPTCHA_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY, INSTALLED_APPS
 
 def securFileHome():
-    with open("/home/gabriel/prog/json_config/senadlake.json") as config_file:
+    with open(BASE_DIR + "/venv/senadlake.json") as config_file:
         config = json.load(config_file)
     return config
 

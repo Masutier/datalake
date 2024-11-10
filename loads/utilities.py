@@ -39,9 +39,6 @@ def cleanTypes():
     return   
 
 
-
-
-
 def singleList(csvFiles, jsonFiles, xlsxFiles, pdfFiles):
     dataSet = []
     csvSingles = []

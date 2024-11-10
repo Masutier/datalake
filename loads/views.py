@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import date
 from django.conf import settings
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from .models import LoadFiles, DataSet, SheetFile
@@ -14,6 +15,7 @@ from .utilities import fileList, singleList, newFolder
 from senadlake.dbases import extensions
 
 today = date.today()
+nameDate = today.day, today.month, today.year
 validExt, validExtPro = extensions()
 origen_path = "/home/gabriel/Downloads/"
 filepath = os.path.join(settings.BASE_DIR, "FILES/Raw/")
@@ -55,7 +57,7 @@ def loadFile(request):
 
                 return redirect("allFiles")
 
-            elif filenamex[-1] == 'xlsx':
+            elif filenamex[-1] == 'xlsx' or filenamex[-1] == 'xls' or filenamex[-1] == 'ods':
                 df = pd.ExcelFile(inputFile)
                 filesSaved = []
                 count = 0
@@ -94,7 +96,7 @@ def loadFile(request):
                         filenamex = filesave.split('.')
                         filenamey = filenamex[-3].split('/')
                         field = filenamey[-1] + str(count)
-                        cleanString = re.sub('\W+','_', field )
+                        cleanString = re.sub('\W+', '_', field )
                         sheetform.id = cleanString
                         sheetform.sheet_id = count
                         sheetform.sheet_link = filesave
@@ -114,9 +116,9 @@ def loadFile(request):
                 else:
                     lastFilepath = filepath + "/" + quality + "/" +  entity + "/" +  date_now + "/"
                     endDir = newFolder(lastFilepath)
-                    sheet = df.sheet_names
+                    sheet = df.sheet_names[0]
                     df = pd.read_excel(inputFile)
-                    jsonOutput_gz = endDir + filenamex[0] + "_" + str(sheet[0]) + ".json" + ".gz"
+                    jsonOutput_gz = endDir + filenamex[0] + "_" + sheet + ".json" + ".gz"
                     output = df.to_json(jsonOutput_gz, indent=4, orient='records', compression='gzip', force_ascii=False)
                     pform.jsonFile = namefile
                     pform.file_ext = filenamex[-1]
@@ -129,6 +131,31 @@ def loadFile(request):
                     pform.save()
                     messages.success(request, "The file was saved successfully")
                     return redirect("allFiles")
+
+            elif filenamex[-1] == 'zip':
+
+                #try:
+                location = filepath + "/" + quality + "/" +  entity + "/" +  date_now + "/"
+                fs = FileSystemStorage(location)
+                path = os.path.join(fs.location, inputFile.name)
+                filename = fs.save(path, inputFile)
+                file_url = fs.url(filename)
+                    # Save in db
+                pform.jsonFile = inputFile.name
+                pform.file_ext = filenamex[-1]
+                pform.file_name = namefile
+                pform.file_numcols = 0 #- To count columns
+                pform.file_numrows = 0 #- To count rows
+                pform.data_set = False
+                pform.file_link = file_url
+                pform.file_columns = 0
+                pform.save()
+
+                messages.warning(request, f'El archivo se guardo satisfactoriamente!.')
+                return redirect('home')
+                # except:
+                #     messages.warning(request, f'El Instructor no se encontro en los registros.')
+                #     return redirect('home')
 
             else:
                 extMess = "The file has not a valid extension. Please, verify name and extension and try again."
@@ -181,9 +208,6 @@ def csvCall(request, pk):
     fileIn = LoadFiles.objects.get(id=pk)
     nameff = fileIn.file_name.split('.')
     nameOut = nameff[0]
-
-    print(fileIn.file_link)
-
     data = pd.read_json(fileIn.file_link)
     csvout = data.to_csv(nameOut + ".csv", sep=';', encoding='utf-8')
 
@@ -308,7 +332,7 @@ def searchFiles(request):
     elif system == "Barrio":
         allFiles = LoadFiles.objects.filter(territory='Barrio')
     
-    allcount = allFiles.count()
+    #allcount = allFiles.count()
     # see error -- https://stackoverflow.com/questions/30384458/django-pagination-local-variable-referenced-before-assignment
     # pagination
     paginator = Paginator(allFiles, 5)
@@ -325,5 +349,5 @@ def searchFiles(request):
     end_index1 = index1 + 3 if index1 <= max_index1 else max_index1
     page_range1 = paginator.page_range[start_index1:end_index1]
 
-    context={"title": "Search Files", "banner":"Search DataSet in DataBase", 'allFiles':allFiles, 'allcount':allcount, 'page_range1':page_range1}
+    context={"title": "Search Files", "banner":"Search DataSet in DataBase", 'allFiles':allFiles, 'page_range1':page_range1}
     return render(request, 'loads/searchFiles.html', context)
